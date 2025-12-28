@@ -1,0 +1,11 @@
+图标文件说明 
+ 
+项目需要以下图标文件： 
+1. icon-192.png (192x192像素) 
+2. icon-512.png (512x512像素) 
+3. favicon.ico (32x32像素) 
+ 
+生成方法： 
+1. 运行 create-icons.js (需要Node.js和canvas模块) 
+2. 或使用在线图标生成器创建 
+3. 将生成的图标文件放在与index.html相同的目录下 

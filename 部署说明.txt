@@ -1,0 +1,9 @@
+部署说明 
+ 
+1. 将"保险箱-密码管理器"文件夹中的所有文件上传到Web服务器 
+2. 确保服务器支持HTTPS（PWA要求） 
+3. 通过浏览器访问 index.html 即可使用 
+ 
+本地测试： 
+python -m http.server 8000 
+然后访问 http://localhost:8000 

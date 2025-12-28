@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>保险箱 - 移动密码管理器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico">
+    <meta name="theme-color" content="#4a6cf7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>保险箱</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="icon-btn" id="add-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="icon-btn" id="settings-btn">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Top Navigation Tabs -->
+        <div class="top-nav-tabs">
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="all">
+                    <i class="fas fa-key"></i>
+                    <span>所有密码</span>
+                    <span class="tab-badge" id="tab-password-count">0</span>
+                </button>
+                <button class="tab-btn" data-tab="favorites">
+                    <i class="fas fa-star"></i>
+                    <span>收藏夹</span>
+                </button>
+                <button class="tab-btn" data-tab="categories">
+                    <i class="fas fa-folder"></i>
+                    <span>分类</span>
+                </button>
+                <button class="tab-btn" data-tab="generator">
+                    <i class="fas fa-random"></i>
+                    <span>生成器</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Search Bar (when active) -->
+            <div class="search-container" id="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="搜索密码...">
+                    <button class="clear-search" id="clear-search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <section class="stats-overview">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-passwords">0</h3>
+                            <p>总密码数</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon secure">
+                            <i class="fas fa-shield-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="secure-percentage">85%</h3>
+                            <p>安全指数</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon recent">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="recent-count">0</h3>
+                            <p>最近添加</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h3 class="section-title">快捷操作</h3>
+                <div class="action-grid">
+                    <button class="action-btn" id="quick-add">
+                        <div class="action-icon add">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <span>添加密码</span>
+                    </button>
+                    <button class="action-btn" id="quick-generate">
+                        <div class="action-icon generate">
+                            <i class="fas fa-random"></i>
+                        </div>
+                        <span>生成密码</span>
+                    </button>
+                    <button class="action-btn" id="quick-import">
+                        <div class="action-icon import">
+                            <i class="fas fa-file-import"></i>
+                        </div>
+                        <span>导入</span>
+                    </button>
+                    <button class="action-btn" id="quick-export">
+                        <div class="action-icon export">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <span>导出</span>
+                    </button>
+                    <button class="action-btn" id="quick-backup">
+                        <div class="action-icon backup">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <span>备份</span>
+                    </button>
+                    <button class="action-btn" id="quick-security">
+                        <div class="action-icon security">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <span>安全检查</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Password List -->
+            <section class="password-list-section">
+                <div class="section-header">
+                    <h3 class="section-title">密码列表</h3>
+                    <div class="section-actions">
+                        <button class="filter-btn" id="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            <span>筛选</span>
+                        </button>
+                        <button class="sort-btn" id="sort-btn">
+                            <i class="fas fa-sort-amount-down"></i>
+                            <span>排序</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="password-list" id="password-list">
+                    <!-- Password items will be dynamically added here -->
+                    <div class="empty-state">
+                        <i class="fas fa-key"></i>
+                        <h4>暂无密码</h4>
+                        <p>添加第一个密码开始使用</p>
+                        <button class="btn btn-primary" id="add-first-btn">
+                            添加第一个密码
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Status -->
+            <section class="security-status-section">
+                <div class="security-card">
+                    <div class="security-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>安全状态</h3>
+                    </div>
+                    <div class="security-meter-container">
+                        <div class="meter-labels">
+                            <span>弱</span>
+                            <span>中</span>
+                            <span>强</span>
+                            <span>非常强</span>
+                        </div>
+                        <div class="security-meter">
+                            <div class="meter-fill" id="security-meter-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="security-tips">
+                        <p><i class="fas fa-check-circle"></i> 建议：使用至少12位包含大小写字母、数字和符号的密码</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-tab active">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <i class="fas fa-key"></i>
+                <span>密码</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <i class="fas fa-random"></i>
+                <span>生成器</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <i class="fas fa-chart-bar"></i>
+                <span>统计</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+
+        <!-- Add Password Modal -->
+        <div class="modal" id="add-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>添加新密码</h3>
+                    <button class="close-modal" id="close-add-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label for="service-name">
+                                <i class="fas fa-globe"></i>
+                                服务/网站
+                            </label>
+                            <input type="text" id="service-name" required placeholder="例如：谷歌">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">
+                                <i class="fas fa-user"></i>
+                                用户名/邮箱
+                            </label>
+                            <input type="text" id="username" required placeholder="user@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">
+                                <i class="fas fa-lock"></i>
+                                密码
+                            </label>
+                            <div class="password-field">
+                                <input type="password" id="password" required>
+                                <button type="button" class="toggle-password" id="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="generate-btn" id="generate-from-modal">
+                                    <i class="fas fa-random"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">
+                                <i class="fas fa-folder"></i>
+                                分类
+                            </label>
+                            <select id="category">
+                                <option value="personal">个人</option>
+                                <option value="work">工作</option>
+                                <option value="social">社交媒体</option>
+                                <option value="finance">财务</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="url">
+                                <i class="fas fa-link"></i>
+                                网址 (可选)
+                            </label>
+                            <input type="url" id="url" placeholder="https://example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">
+                                <i class="fas fa-sticky-note"></i>
+                                备注 (可选)
+                            </label>
+                            <textarea id="notes" rows="2" placeholder="附加信息..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="is-favorite">
+                                <span class="checkmark"></span>
+                                添加到收藏夹
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-password">取消</button>
+                            <button type="submit" class="btn btn-primary" id="save-password">保存密码</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Generator Modal -->
+        <div class="modal" id="generator-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>
+                        <i class="fas fa-random"></i>
+                        密码生成器
+                    </h3>
+                    <button class="close-modal" id="close-generator-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="generator-controls">
+                        <div class="control-group">
+                            <label>长度: <span id="length-value">16</span></label>
+                            <input type="range" id="password-length" min="8" max="32" value="16">
+                        </div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-uppercase" checked>
+                                <span class="checkmark"></span>
+                                大写字母 (A-Z)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-lowercase" checked>
+                                <span class="checkmark"></span>
+                                小写字母 (a-z)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-numbers" checked>
+                                <span class="checkmark"></span>
+                                数字 (0-9)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-symbols" checked>
+                                <span class="checkmark"></span>
+                                符号 (!@#$%)
+                            </label>
+                        </div>
+                        <div class="generated-password-display">
+                            <input type="text" id="generated-password" readonly>
+                            <button class="btn copy-btn" id="copy-generated">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="btn refresh-btn" id="refresh-generated">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <label>强度:</label>
+                            <div class="strength-meter">
+                                <div class="strength-bar" id="strength-bar"></div>
+                            </div>
+                            <span class="strength-text" id="strength-text">非常强</span>
+                        </div>
+                        <div class="password-history">
+                            <h4>最近生成的密码</h4>
+                            <div class="history-list" id="password-history">
+                                <!-- 历史密码将动态添加 -->
+                            </div>
+                        </div>
+                        <div class="generator-actions">
+                            <button class="btn btn-secondary" id="regenerate-password">
+                                <i class="fas fa-redo"></i> 重新生成
+                            </button>
+                            <button class="btn btn-primary" id="use-password">
+                                使用此密码
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settings-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>
+                        <i class="fas fa-cog"></i>
+                        设置
+                    </h3>
+                    <button class="close-modal" id="close-settings-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h4>安全设置</h4>
+                        <div class="setting-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="auto-lock">
+                                <span class="checkmark"></span>
+                                自动锁定应用
+                            </label>
+                            <p class="setting-description">5分钟无操作后自动锁定应用</p>
+                        </div>
+                        <div class="setting-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="biometric-auth">
+                                <span class="checkmark"></span>
+                                生物识别认证
+                            </label>
+                            <p class="setting-description">使用指纹或面部识别解锁</p>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h4>备份与同步</h4>
+                        <div class="setting-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="auto-backup">
+                                <span class="checkmark"></span>
+                                自动备份
+                            </label>
+                            <p class="setting-description">每天自动备份密码数据</p>
+                        </div>
+                        <button class="btn btn-secondary" id="backup-now">
+                            <i class="fas fa-cloud-upload-alt"></i> 立即备份
+                        </button>
+                    </div>
+                    <div class="settings-section">
+                        <h4>界面设置</h4>
+                        <div class="setting-item">
+                            <label>主题:</label>
+                            <select id="theme-select">
+                                <option value="light">浅色</option>
+                                <option value="dark">深色</option>
+                                <option value="auto">自动</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
